@@ -1,9 +1,13 @@
 import os
+import sys
 chemin=os.getcwd()
+print(os.getcwd())
 os.chdir('./..')
 print(os.getcwd())
+sys.path.append(os.getcwd())
 from hack_class import *
 os.chdir(chemin)
+sys.path.append(os.getcwd())
 import pandas as pd
 import numpy as np
 import pandas as pd
