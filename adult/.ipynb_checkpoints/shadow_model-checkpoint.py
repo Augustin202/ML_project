@@ -67,6 +67,6 @@ for i in range(10):
     reports.append(report)
 
 # save
-filename = "report_shadow_model_{}_{}.json".format(nb_shadow, num_fichier)
+filename = "./data/report_shadow_model_{}_{}.json".format(nb_shadow, num_fichier)
 with open(filename, "w") as json_file:
     json.dump(list_lpy, json_file, indent=2)
