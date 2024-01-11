@@ -14,6 +14,7 @@ from tqdm import tqdm
 import random
 import json
 
+from sklearn.base import clone
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier
@@ -36,7 +37,7 @@ X, y = fetch_openml('mnist_784', version=1, return_X_y=True, parser='auto')
 X = (X/255. - .5)*2
 
 #Target model
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=200, train_size=200,stratify = y)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=2000, train_size=2000,stratify = y)
 rf_clf = RandomForestClassifier()
 rf_clf.fit(X_train, y_train)
 
@@ -45,7 +46,7 @@ random.seed()
 reports=[]
 for i in range(10):
     #on split les données en deux, on garde le set shadow qui va servir à entrainer les shadow models
-    X_shadow, temp, y_shadow, temp2 = train_test_split(X, y, test_size=100, train_size=100,stratify = y)
+    X_shadow, temp, y_shadow, temp2 = train_test_split(X, y, test_size=1000, train_size=1000,stratify = y)
 
     models = [RandomForestClassifier()]*nb_shadow
     test = HackingModel(RandomForestClassifier(n_estimators=100),models, X_shadow, y_shadow,

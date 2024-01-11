@@ -24,13 +24,14 @@ from sklearn.neural_network import MLPClassifier
 
 from sklearn.datasets import fetch_openml
 
-
+models_dic={'rf':RandomForestClassifier(), 'tree':DecisionTreeClassifier(), 'logistic':LogisticRegression(C=30.0),
+      'knn':KNeighborsClassifier(), 'MLP':MLPClassifier()}
 
 args = sys.argv[1:]
-nb_shadow = int(args[0])
+model_name = args[0]
 num_fichier = int(args[1])
 
-
+model=models_dic[model_name]
 np.random.seed(42)
 
 X, y = fetch_openml('mnist_784', version=1, return_X_y=True, parser='auto')
@@ -38,7 +39,7 @@ X = (X/255. - .5)*2
 
 #Target model
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=2000, train_size=2000,stratify = y)
-rf_clf = RandomForestClassifier()
+rf_clf = clone(model)
 rf_clf.fit(X_train, y_train)
 
 random.seed()
@@ -48,13 +49,13 @@ for i in range(10):
     #on split les données en deux, on garde le set shadow qui va servir à entrainer les shadow models
     X_shadow, temp, y_shadow, temp2 = train_test_split(X, y, test_size=1000, train_size=1000,stratify = y)
 
-    models = [RandomForestClassifier()]*nb_shadow
+    models = [clone(model)]*2
     test = HackingModel(RandomForestClassifier(n_estimators=100),models, X_shadow, y_shadow,
                       list(set(y_shadow)),list(set(y_train)) )
     report=test.print_score_hacking(X_train,y_train, X_test,y_test, rf_clf)
     reports.append(report)
 
 # save
-filename = "./data/report_shadow_model_{}_{}.json".format(nb_shadow, num_fichier)
+filename = "./data/report_test_model_{}_{}.json".format(model_name, num_fichier)
 with open(filename, "w") as json_file:
     json.dump(reports, json_file, indent=2)
