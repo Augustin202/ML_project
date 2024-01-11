@@ -69,4 +69,4 @@ for i in range(10):
 # save
 filename = "./data/report_shadow_model_{}_{}.json".format(nb_shadow, num_fichier)
 with open(filename, "w") as json_file:
-    json.dump(list_lpy, json_file, indent=2)
+    json.dump(reports, json_file, indent=2)
