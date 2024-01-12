@@ -38,7 +38,7 @@ X, y = fetch_openml('mnist_784', version=1, return_X_y=True, parser='auto')
 X = (X/255. - .5)*2
 
 #Target model
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=2000, train_size=2000,stratify = y)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=300, train_size=300,stratify = y)
 rf_clf = clone(model)
 rf_clf.fit(X_train, y_train)
 
@@ -47,7 +47,7 @@ random.seed()
 reports=[]
 for i in range(10):
     #on split les données en deux, on garde le set shadow qui va servir à entrainer les shadow models
-    X_shadow, temp, y_shadow, temp2 = train_test_split(X, y, test_size=1000, train_size=1000,stratify = y)
+    X_shadow, temp, y_shadow, temp2 = train_test_split(X, y, test_size=300, train_size=300,stratify = y)
 
     models = [clone(model)]*2
     test = HackingModel(RandomForestClassifier(n_estimators=100),models, X_shadow, y_shadow,
