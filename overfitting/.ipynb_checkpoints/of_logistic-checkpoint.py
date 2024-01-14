@@ -24,15 +24,13 @@ from sklearn.neural_network import MLPClassifier
 
 from sklearn.datasets import fetch_openml
 
-models_dic={'rf':RandomForestClassifier(), 'tree':DecisionTreeClassifier(), 'logistic':LogisticRegression(C=30.0),
-      'knn':KNeighborsClassifier(), 'MLP':MLPClassifier()}
-
 args = sys.argv[1:]
-model_name = args[0]
+C = float(args[0])
 num_fichier = int(args[1])
 
-model=models_dic[model_name]
-np.random.seed(42)
+model=model=LogisticRegression(penalty='l2', dual=False, tol=0.0001, C=C, fit_intercept=True, intercept_scaling=1, 
+                         class_weight=None, random_state=None, solver='lbfgs', max_iter=300, multi_class='auto', 
+                         verbose=0, warm_start=False, n_jobs=None, l1_ratio=None)
 
 X, y = fetch_openml('mnist_784', version=1, return_X_y=True, parser='auto')
 X = (X/255. - .5)*2
@@ -42,7 +40,10 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=300, train_s
 rf_clf = clone(model)
 rf_clf.fit(X_train, y_train)
 
-random.seed()
+y_train_pred = rf_clf.predict(X_train)
+y_test_pred = rf_clf.predict(X_test)
+report_train_target=classification_report(y_train, y_train_pred,output_dict = True)
+report_test_target=classification_report(y_test, y_test_pred,output_dict = True)
 
 reports=[]
 for i in range(10):
@@ -53,9 +54,10 @@ for i in range(10):
     test = HackingModel(RandomForestClassifier(n_estimators=100),models, X_shadow, y_shadow,
                       list(set(y_shadow)),list(set(y_train)) )
     report=test.print_score_hacking(X_train,y_train, X_test,y_test, rf_clf)
-    reports.append(report)
+    reports.append({'report_train_target':report_train_target, 'report_test_target':report_test_target,
+                   'report_hack_model':report})
 
 # save
-filename = "./data/report_test_model_{}_{}.json".format(model_name, num_fichier)
+filename = "./data/report_of_logistic_{}_{}.json".format(C, num_fichier)
 with open(filename, "w") as json_file:
     json.dump(reports, json_file, indent=2)
