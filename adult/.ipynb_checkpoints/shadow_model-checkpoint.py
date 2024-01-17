@@ -48,14 +48,12 @@ num_fichier = int(args[1])
 X=pd.read_csv('X_adult.csv')
 y=pd.read_csv('y_adult.csv')['predic']
 
-np.random.seed(42)
 
 #Target model
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=5000, train_size=5000,stratify = y)
 logistic_clf = LogisticRegression(C= 100)
 logistic_clf.fit(X_train, y_train)
 
-random.seed()
 
 reports=[]
 for i in range(10):

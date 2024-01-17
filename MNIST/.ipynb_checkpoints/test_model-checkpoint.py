@@ -32,7 +32,6 @@ model_name = args[0]
 num_fichier = int(args[1])
 
 model=models_dic[model_name]
-np.random.seed(42)
 
 X, y = fetch_openml('mnist_784', version=1, return_X_y=True, parser='auto')
 X = (X/255. - .5)*2
@@ -42,7 +41,6 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=300, train_s
 rf_clf = clone(model)
 rf_clf.fit(X_train, y_train)
 
-random.seed()
 
 reports=[]
 for i in range(10):
